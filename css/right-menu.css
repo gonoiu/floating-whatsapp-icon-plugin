@@ -1,0 +1,128 @@
+
+#mySidenav a {
+  position: fixed;
+  right: -155px;
+  transition: 0.3s;
+  -webkit-transition: 0.3s;
+  padding: 15px;
+  width: 215px;
+  text-decoration: none;
+  font-size: 14px;
+  color: white;
+  border-radius: 5px 0 0 5px;
+  text-align: right;
+  z-index: 1030;
+  margin-top: calc( 50vh - 120px );
+}
+
+#mySidenav a:hover {
+  right: 0;
+  background: white;
+  color:#5091c8;
+  border:solid 1px #5091c8;
+  border-right:0;
+}
+
+#mySidenav .online:hover {
+  right: 0;
+  background: white;
+  color:#4CAF50;
+  border:solid 1px #4CAF50;
+  border-right:0;
+}
+
+#mySidenav .info:hover {
+  right: 0;
+  background: white;
+  color: #2196F3;
+  border:solid 1px #2196F3;
+  border-right:0;
+}
+
+#mySidenav .factura:hover {
+  right: 0;
+  background: white;
+  color: #f44336;
+  border:solid 1px #f44336;
+  border-right:0;
+}
+
+#mySidenav .dispecerat:hover {
+  right: 0;
+  background: white;
+  color: #555;
+  border:solid 1px #555;
+  border-right:0;
+}
+
+
+.online {
+  top: 20px;
+  background-color: #4CAF50;
+}
+
+.info {
+  top: 82px;
+  background-color: #2196F3;
+}
+
+
+.factura {
+  top: 143px;
+  background-color: #f44336;
+}
+
+.dispecerat {
+  top: 205px;
+  background-color: #555;
+}
+
+
+
+@media only screen and (max-width: 640px) {
+    #mySidenav a {
+      position: fixed;
+      right: -155px;
+      transition: 0.5s;
+      -webkit-transition: 0.3s;
+      padding: 5px;
+      width: 190px;
+      text-decoration: none;
+      font-size: 12px;
+      color: white;
+      border-radius: 5px 0 0 5px;
+      text-align: right;
+      z-index: 1030;
+      margin-top: calc( 50vh - 120px);
+    }
+
+    .online {
+      top: 70px;
+      background-color: #4CAF50;
+    }
+
+    .info {
+      top: 110px;
+      background-color: #2196F3;
+    }
+
+
+    .factura {
+      top: 150px;
+      background-color: #f44336;
+    }
+
+    .dispecerat {
+      top: 190px;
+      background-color: #555
+    }
+}
+
+.border {
+  padding: 30px;
+}
+
+#whatsapp .fa-whatsapp {
+  font-size: 24px; /* Adjust size */
+  line-height: 40px; /* Match the button height */
+}
