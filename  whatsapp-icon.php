@@ -2,7 +2,7 @@
 /*
 Plugin Name: Floating WhatsApp Icon
 Description: Add number to Settings > WhatsApp Icon. 
-Version: 1.1.0
+Version: 1.1.2
 Author: Georgian.o.
 */
 
@@ -52,7 +52,7 @@ function enqueue_whatsapp_icon_assets() {
             100%{transform: translateX(-50%) translateY(-50%) scale(1.5); opacity: 0;}
         }
     ');
-    
+
     // Add WhatsApp icon HTML to the footer
     add_action('wp_footer', 'add_whatsapp_icon_html');
 }
@@ -61,9 +61,10 @@ function enqueue_whatsapp_icon_assets() {
 function add_whatsapp_icon_html() {
     $whatsapp_number = get_option('whatsapp_phone_number', '');
     if ($whatsapp_number) {
+        $clean_number = preg_replace('/\D/', '', $whatsapp_number); // Remove +, spaces, dashes etc.
         echo '
         <div id="whatsapp">
-            <a href="https://api.whatsapp.com/send/?phone=' . esc_attr($whatsapp_number) . '&text&app_absent=0" target="_blank" class="wtsapp">
+            <a href="https://api.whatsapp.com/send/?phone=' . esc_attr($clean_number) . '" target="_blank" class="wtsapp">
                 <i class="fa-brands fa-whatsapp"></i>
             </a>
         </div>';
@@ -85,20 +86,17 @@ add_action('admin_menu', 'whatsapp_icon_settings_page');
 
 // Render the settings page HTML
 function whatsapp_icon_settings_page_html() {
-    // Check if user is allowed to access
     if (!current_user_can('manage_options')) {
         return;
     }
 
-    // Check if settings are saved
     if (isset($_POST['whatsapp_phone_number'])) {
-        update_option('whatsapp_phone_number', sanitize_text_field($_POST['whatsapp_phone_number']));
+        $raw = $_POST['whatsapp_phone_number'];
+        update_option('whatsapp_phone_number', sanitize_text_field($raw));
         echo '<div class="notice notice-success is-dismissible"><p>Settings saved.</p></div>';
     }
 
-    // Get current phone number
     $whatsapp_number = get_option('whatsapp_phone_number', '');
-
     ?>
     <div class="wrap">
         <h1>WhatsApp Icon Settings</h1>
@@ -108,7 +106,7 @@ function whatsapp_icon_settings_page_html() {
                     <th scope="row">WhatsApp Phone Number</th>
                     <td>
                         <input type="text" name="whatsapp_phone_number" value="<?php echo esc_attr($whatsapp_number); ?>" placeholder="+1234567890" />
-                        <p class="description">Enter your WhatsApp phone number in international format (e.g., +1234567890).</p>
+                        <p class="description">Enter your WhatsApp phone number in international format (e.g., +1234567890). The <strong>+</strong> and spaces will be cleaned automatically.</p>
                     </td>
                 </tr>
             </table>
