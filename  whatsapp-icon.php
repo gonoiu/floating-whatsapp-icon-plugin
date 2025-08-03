@@ -2,14 +2,16 @@
 /*
 Plugin Name: Floating WhatsApp Icon
 Description: Add number to Settings > WhatsApp Icon. 
-Version: 1.1.2
+Version: 1.1.1
 Author: Georgian.o.
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 // Enqueue CSS and Font Awesome
-function enqueue_whatsapp_icon_assets() {
-    wp_enqueue_style('whatsapp-font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
-    wp_add_inline_style('whatsapp-font-awesome', '
+function fwa_enqueue_assets() {
+    wp_enqueue_style('fwa-font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+    wp_add_inline_style('fwa-font-awesome', '
         #whatsapp .wtsapp{
             position: fixed;
             transform: all .5s ease;
@@ -53,15 +55,15 @@ function enqueue_whatsapp_icon_assets() {
         }
     ');
 
-    // Add WhatsApp icon HTML to the footer
-    add_action('wp_footer', 'add_whatsapp_icon_html');
+    add_action('wp_footer', 'fwa_output_icon_html');
 }
+add_action('wp_enqueue_scripts', 'fwa_enqueue_assets');
 
 // Display the WhatsApp icon with dynamic phone number
-function add_whatsapp_icon_html() {
-    $whatsapp_number = get_option('whatsapp_phone_number', '');
+function fwa_output_icon_html() {
+    $whatsapp_number = get_option('fwa_whatsapp_phone_number', '');
     if ($whatsapp_number) {
-        $clean_number = preg_replace('/\D/', '', $whatsapp_number); // Remove +, spaces, dashes etc.
+        $clean_number = preg_replace('/\D/', '', $whatsapp_number);
         echo '
         <div id="whatsapp">
             <a href="https://api.whatsapp.com/send/?phone=' . esc_attr($clean_number) . '" target="_blank" class="wtsapp">
@@ -70,33 +72,32 @@ function add_whatsapp_icon_html() {
         </div>';
     }
 }
-add_action('wp_enqueue_scripts', 'enqueue_whatsapp_icon_assets');
 
 // Create a settings page in the WordPress dashboard
-function whatsapp_icon_settings_page() {
+function fwa_add_settings_page() {
     add_options_page(
-        'WhatsApp Icon Settings',   // Page title
-        'WhatsApp Icon',            // Menu title
-        'manage_options',           // Capability
-        'whatsapp-icon-settings',   // Menu slug
-        'whatsapp_icon_settings_page_html' // Callback function
+        'WhatsApp Icon Settings',
+        'WhatsApp Icon',
+        'manage_options',
+        'fwa-whatsapp-icon-settings',
+        'fwa_render_settings_page'
     );
 }
-add_action('admin_menu', 'whatsapp_icon_settings_page');
+add_action('admin_menu', 'fwa_add_settings_page');
 
 // Render the settings page HTML
-function whatsapp_icon_settings_page_html() {
+function fwa_render_settings_page() {
     if (!current_user_can('manage_options')) {
         return;
     }
 
-    if (isset($_POST['whatsapp_phone_number'])) {
-        $raw = $_POST['whatsapp_phone_number'];
-        update_option('whatsapp_phone_number', sanitize_text_field($raw));
+    if (isset($_POST['fwa_whatsapp_phone_number'])) {
+        $raw = $_POST['fwa_whatsapp_phone_number'];
+        update_option('fwa_whatsapp_phone_number', sanitize_text_field($raw));
         echo '<div class="notice notice-success is-dismissible"><p>Settings saved.</p></div>';
     }
 
-    $whatsapp_number = get_option('whatsapp_phone_number', '');
+    $whatsapp_number = get_option('fwa_whatsapp_phone_number', '');
     ?>
     <div class="wrap">
         <h1>WhatsApp Icon Settings</h1>
@@ -105,7 +106,7 @@ function whatsapp_icon_settings_page_html() {
                 <tr valign="top">
                     <th scope="row">WhatsApp Phone Number</th>
                     <td>
-                        <input type="text" name="whatsapp_phone_number" value="<?php echo esc_attr($whatsapp_number); ?>" placeholder="+1234567890" />
+                        <input type="text" name="fwa_whatsapp_phone_number" value="<?php echo esc_attr($whatsapp_number); ?>" placeholder="+1234567890" />
                         <p class="description">Enter your WhatsApp phone number in international format (e.g., +1234567890). The <strong>+</strong> and spaces will be cleaned automatically.</p>
                     </td>
                 </tr>
